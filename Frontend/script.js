@@ -3,193 +3,140 @@ class GalacticGitHubFinder {
         this.API_BASE = 'http://localhost:8000';
         this.currentRepos = [];
         this.originalRepos = [];
-        this.cursorTrails = [];
-        this.particles = [];
         this.init();
     }
 
     init() {
-        this.setupSpaceEffects();
+        this.setupOptimizedEffects();
         this.bindEvents();
         this.setupLanguageColors();
         this.checkServerConnection();
         this.setupEntranceAnimations();
     }
 
-    setupSpaceEffects() {
-        this.createCustomCursor();
-        this.createFloatingParticles();
-        this.createStarField();
-        this.addSpaceInteractions();
+    setupOptimizedEffects() {
+        this.createSimpleCursor();
+        this.createMinimalParticles();
+        this.addBasicInteractions();
     }
 
-    createCustomCursor() {
+    createSimpleCursor() {
         const cursor = document.getElementById('cursor');
-        const trailCount = 8;
-        
-        // Create cursor trails
-        for (let i = 0; i < trailCount; i++) {
-            const trail = document.createElement('div');
-            trail.className = 'cursor-trail';
-            trail.style.cssText = `
-                position: fixed;
-                width: ${4 - i * 0.3}px;
-                height: ${4 - i * 0.3}px;
-                background: rgba(59, 130, 246, ${0.6 - i * 0.08});
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: ${9998 - i};
-                transition: all 0.${i + 1}s ease;
-            `;
-            document.body.appendChild(trail);
-            this.cursorTrails.push(trail);
-        }
-
-        let mouseX = 0, mouseY = 0;
         
         document.addEventListener('mousemove', (e) => {
-            mouseX = e.clientX;
-            mouseY = e.clientY;
-            
-            cursor.style.left = mouseX - 10 + 'px';
-            cursor.style.top = mouseY - 10 + 'px';
-            
-            // Update trails with delay
-            this.cursorTrails.forEach((trail, index) => {
-                setTimeout(() => {
-                    trail.style.left = mouseX - (2 - index * 0.15) + 'px';
-                    trail.style.top = mouseY - (2 - index * 0.15) + 'px';
-                }, index * 50);
-            });
+            cursor.style.left = e.clientX - 10 + 'px';
+            cursor.style.top = e.clientY - 10 + 'px';
         });
 
         document.addEventListener('mousedown', () => {
             cursor.style.transform = 'scale(0.8)';
-            cursor.style.background = 'radial-gradient(circle, rgba(147, 51, 234, 0.8) 0%, transparent 70%)';
         });
 
         document.addEventListener('mouseup', () => {
             cursor.style.transform = 'scale(1)';
-            cursor.style.background = 'radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, transparent 70%)';
         });
     }
 
-    createFloatingParticles() {
-        const particleCount = 80;
+    createMinimalParticles() {
+        // Reduced particle count for better performance
+        const particleCount = 15;
         const container = document.getElementById('particlesContainer');
+        
+        if (!container) {
+            const newContainer = document.createElement('div');
+            newContainer.id = 'particlesContainer';
+            newContainer.style.cssText = `
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                pointer-events: none;
+                z-index: 0;
+            `;
+            document.body.appendChild(newContainer);
+        }
         
         for (let i = 0; i < particleCount; i++) {
             const particle = document.createElement('div');
-            particle.className = 'particle';
-            
-            const size = Math.random() * 4 + 1;
-            const colors = ['#3B82F6', '#9333EA', '#EC4899', '#06B6D4'];
+            const size = Math.random() * 3 + 1;
+            const colors = ['#3B82F6', '#9333EA'];
             const color = colors[Math.floor(Math.random() * colors.length)];
             
             particle.style.cssText = `
-                position: fixed;
+                position: absolute;
                 width: ${size}px;
                 height: ${size}px;
                 background: ${color};
                 border-radius: 50%;
-                pointer-events: none;
-                z-index: 0;
-                opacity: ${Math.random() * 0.8 + 0.2};
-                animation: particleFloat ${Math.random() * 20 + 15}s linear infinite;
-                animation-delay: ${Math.random() * 20}s;
+                opacity: ${Math.random() * 0.6 + 0.2};
+                animation: simpleFloat ${Math.random() * 15 + 10}s linear infinite;
+                animation-delay: ${Math.random() * 10}s;
+                left: ${Math.random() * 100}%;
+                top: 100%;
             `;
-            
-            particle.style.left = Math.random() * 100 + '%';
             
             container.appendChild(particle);
-            this.particles.push(particle);
         }
-    }
-
-    createStarField() {
-        const starCount = 200;
-        const stars = [];
         
-        for (let i = 0; i < starCount; i++) {
-            const star = document.createElement('div');
-            star.style.cssText = `
-                position: fixed;
-                width: ${Math.random() * 3 + 1}px;
-                height: ${Math.random() * 3 + 1}px;
-                background: rgba(255, 255, 255, ${Math.random() * 0.8 + 0.2});
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 0;
-                left: ${Math.random() * 100}%;
-                top: ${Math.random() * 100}%;
-                animation: starTwinkle ${Math.random() * 3 + 2}s ease-in-out infinite;
-                animation-delay: ${Math.random() * 3}s;
+        // Add simplified float animation
+        if (!document.querySelector('#simple-float-style')) {
+            const style = document.createElement('style');
+            style.id = 'simple-float-style';
+            style.textContent = `
+                @keyframes simpleFloat {
+                    0% {
+                        transform: translateY(0);
+                        opacity: 0;
+                    }
+                    10% {
+                        opacity: 1;
+                    }
+                    90% {
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateY(-100vh);
+                        opacity: 0;
+                    }
+                }
             `;
-            
-            document.body.appendChild(star);
-            stars.push(star);
+            document.head.appendChild(style);
         }
     }
 
-    addSpaceInteractions() {
-        // Add hover effects to cards
+    addBasicInteractions() {
+        // Simplified parallax effect
+        let ticking = false;
+        
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(() => {
+                    const scrolled = window.pageYOffset;
+                    const header = document.querySelector('.header');
+                    if (header) {
+                        header.style.transform = `translateY(${scrolled * 0.2}px)`;
+                    }
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Add simple hover effects
         document.addEventListener('mouseover', (e) => {
             if (e.target.closest('.repo-card')) {
-                this.createRippleEffect(e.target.closest('.repo-card'), e);
+                const card = e.target.closest('.repo-card');
+                card.style.transform = 'scale(1.05)';
             }
         });
 
-        // Add parallax effect
-        window.addEventListener('scroll', () => {
-            const scrolled = window.pageYOffset;
-            const header = document.querySelector('.header');
-            if (header) {
-                header.style.transform = `translateY(${scrolled * 0.3}px)`;
+        document.addEventListener('mouseout', (e) => {
+            if (e.target.closest('.repo-card')) {
+                const card = e.target.closest('.repo-card');
+                card.style.transform = 'scale(1)';
             }
-            
-            // Move particles with scroll
-            this.particles.forEach((particle, index) => {
-                const speed = (index % 3 + 1) * 0.1;
-                particle.style.transform = `translateY(${scrolled * speed}px)`;
-            });
         });
-
-        // Add typing animation to input
-        const input = document.getElementById('username');
-        input.addEventListener('focus', () => {
-            input.style.boxShadow = '0 0 0 4px rgba(59, 130, 246, 0.2), inset 0 0 20px rgba(59, 130, 246, 0.1)';
-        });
-
-        input.addEventListener('blur', () => {
-            input.style.boxShadow = '';
-        });
-    }
-
-    createRippleEffect(element, event) {
-        const ripple = document.createElement('div');
-        const rect = element.getBoundingClientRect();
-        const size = Math.max(rect.width, rect.height);
-        const x = event.clientX - rect.left - size / 2;
-        const y = event.clientY - rect.top - size / 2;
-        
-        ripple.style.cssText = `
-            position: absolute;
-            width: ${size}px;
-            height: ${size}px;
-            left: ${x}px;
-            top: ${y}px;
-            background: radial-gradient(circle, rgba(59, 130, 246, 0.3) 0%, transparent 70%);
-            border-radius: 50%;
-            transform: scale(0);
-            animation: rippleExpand 0.8s ease-out;
-            pointer-events: none;
-        `;
-        
-        element.appendChild(ripple);
-        
-        setTimeout(() => {
-            ripple.remove();
-        }, 800);
     }
 
     bindEvents() {
@@ -208,14 +155,6 @@ class GalacticGitHubFinder {
         sortSelect.addEventListener('change', () => this.sortRepositories());
         repoSearch.addEventListener('input', (e) => this.searchRepositories(e.target.value));
         shareBtn.addEventListener('click', () => this.shareProfile());
-
-        // Add space-themed button effects
-        searchBtn.addEventListener('mouseenter', () => {
-            searchBtn.style.transform = 'translateY(-3px) scale(1.05)';
-        });
-        searchBtn.addEventListener('mouseleave', () => {
-            searchBtn.style.transform = 'translateY(0) scale(1)';
-        });
     }
 
     async checkServerConnection() {
@@ -247,12 +186,12 @@ class GalacticGitHubFinder {
         const elements = document.querySelectorAll('.search-section, .header-content');
         elements.forEach((el, index) => {
             el.style.opacity = '0';
-            el.style.transform = 'translateY(50px)';
+            el.style.transform = 'translateY(30px)';
             setTimeout(() => {
-                el.style.transition = 'all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                el.style.transition = 'all 0.6s ease';
                 el.style.opacity = '1';
                 el.style.transform = 'translateY(0)';
-            }, index * 300);
+            }, index * 200);
         });
     }
 
@@ -377,7 +316,7 @@ class GalacticGitHubFinder {
         document.getElementById('joinedDate').textContent = `Joined the galaxy ${joinedDate}`;
         document.getElementById('joinedDetail').style.display = 'flex';
 
-        // Hide additional details (would need to be added to backend)
+        // Hide additional details
         document.getElementById('websiteDetail').style.display = 'none';
         document.getElementById('twitterDetail').style.display = 'none';
     }
@@ -390,17 +329,14 @@ class GalacticGitHubFinder {
 
     animateNumber(elementId, targetValue) {
         const element = document.getElementById(elementId);
-        const duration = 1500;
+        const duration = 1000;
         const startValue = 0;
         const startTime = performance.now();
 
         const animate = (currentTime) => {
             const elapsed = currentTime - startTime;
             const progress = Math.min(elapsed / duration, 1);
-            
-            // Use easing function for smooth animation
-            const easeProgress = 1 - Math.pow(1 - progress, 3);
-            const currentValue = Math.floor(startValue + (targetValue - startValue) * easeProgress);
+            const currentValue = Math.floor(startValue + (targetValue - startValue) * progress);
             
             element.textContent = this.formatNumber(currentValue);
             
@@ -445,21 +381,21 @@ class GalacticGitHubFinder {
         repos.forEach((repo, index) => {
             const repoCard = this.createRepoCard(repo);
             repoCard.style.opacity = '0';
-            repoCard.style.transform = 'translateY(50px) scale(0.8)';
+            repoCard.style.transform = 'translateY(30px)';
             reposGrid.appendChild(repoCard);
 
-            // Staggered planet appearance animation
+            // Staggered animation with reduced delay
             setTimeout(() => {
-                repoCard.style.transition = 'all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+                repoCard.style.transition = 'all 0.5s ease';
                 repoCard.style.opacity = '1';
-                repoCard.style.transform = 'translateY(0) scale(1)';
-            }, index * 100);
+                repoCard.style.transform = 'translateY(0)';
+            }, index * 50);
         });
     }
 
     createRepoCard(repo) {
         const card = document.createElement('div');
-        card.className = 'repo-card glow-effect';
+        card.className = 'repo-card';
 
         const languageColor = this.getLanguageColor(repo.language);
         const updatedDate = new Date(repo.updated_at).toLocaleDateString('en-US', {
@@ -488,53 +424,10 @@ class GalacticGitHubFinder {
             <div class="repo-updated">Last explored on ${updatedDate}</div>
         `;
 
-        // Add planet wobble effect and click interaction
+        // Simple click effect
         card.addEventListener('click', (e) => {
             if (e.target.tagName !== 'A') {
-                // Create orbital ring effect
-                const ring = document.createElement('div');
-                ring.style.cssText = `
-                    position: absolute;
-                    top: 50%;
-                    left: 50%;
-                    width: 200px;
-                    height: 200px;
-                    border: 2px solid rgba(59, 130, 246, 0.6);
-                    border-radius: 50%;
-                    transform: translate(-50%, -50%) scale(0);
-                    pointer-events: none;
-                    animation: orbitalRing 0.6s ease-out;
-                `;
-                
-                card.appendChild(ring);
-                
-                // Add orbital ring animation
-                if (!document.querySelector('#orbital-ring-style')) {
-                    const style = document.createElement('style');
-                    style.id = 'orbital-ring-style';
-                    style.textContent = `
-                        @keyframes orbitalRing {
-                            0% {
-                                transform: translate(-50%, -50%) scale(0);
-                                opacity: 1;
-                            }
-                            100% {
-                                transform: translate(-50%, -50%) scale(2);
-                                opacity: 0;
-                            }
-                        }
-                    `;
-                    document.head.appendChild(style);
-                }
-                
-                setTimeout(() => {
-                    ring.remove();
-                    card.style.transform = 'scale(0.95)';
-                    setTimeout(() => {
-                        card.style.transform = 'scale(1)';
-                        window.open(repo.html_url, '_blank');
-                    }, 100);
-                }, 300);
+                window.open(repo.html_url, '_blank');
             }
         });
 
@@ -584,7 +477,7 @@ class GalacticGitHubFinder {
     }
 
     searchRepositories(searchTerm) {
-        this.sortRepositories(); // This will apply both search and sort
+        this.sortRepositories();
     }
 
     shareProfile() {
@@ -665,26 +558,23 @@ class GalacticGitHubFinder {
         
         setTimeout(() => {
             statusDiv.classList.remove('show');
-        }, 4000);
+        }, 3000);
     }
 
     showLoading() {
         const loading = document.getElementById('loading');
         loading.style.display = 'block';
         loading.style.opacity = '0';
-        loading.style.transform = 'scale(0.8)';
         
         setTimeout(() => {
-            loading.style.transition = 'all 0.3s ease';
+            loading.style.transition = 'opacity 0.3s ease';
             loading.style.opacity = '1';
-            loading.style.transform = 'scale(1)';
-        }, 100);
+        }, 10);
     }
 
     hideLoading() {
         const loading = document.getElementById('loading');
         loading.style.opacity = '0';
-        loading.style.transform = 'scale(0.8)';
         
         setTimeout(() => {
             loading.style.display = 'none';
@@ -703,7 +593,7 @@ class GalacticGitHubFinder {
                 errorDiv.style.display = 'none';
                 errorDiv.style.opacity = '1';
             }, 300);
-        }, 5000);
+        }, 4000);
     }
 
     hideError() {
@@ -714,19 +604,13 @@ class GalacticGitHubFinder {
         const profileContainer = document.getElementById('profileContainer');
         profileContainer.style.display = 'block';
         profileContainer.style.opacity = '0';
-        profileContainer.style.transform = 'translateY(50px)';
+        profileContainer.style.transform = 'translateY(30px)';
         
         setTimeout(() => {
-            profileContainer.style.transition = 'all 1s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            profileContainer.style.transition = 'all 0.6s ease';
             profileContainer.style.opacity = '1';
             profileContainer.style.transform = 'translateY(0)';
-        }, 100);
-        
-        // Add galactic glow effect to avatar
-        setTimeout(() => {
-            const avatar = document.getElementById('avatar');
-            avatar.style.boxShadow = '0 30px 60px rgba(0, 0, 0, 0.8), 0 0 0 2px rgba(59, 130, 246, 0.6), 0 0 80px rgba(59, 130, 246, 0.5)';
-        }, 1000);
+        }, 50);
     }
 
     hideProfile() {
@@ -734,70 +618,15 @@ class GalacticGitHubFinder {
     }
 }
 
-// Initialize the Galactic GitHub Finder
+// Initialize the optimized Galactic GitHub Finder
 document.addEventListener('DOMContentLoaded', () => {
     new GalacticGitHubFinder();
 });
 
-// Add global space enhancements
+// Add minimal global enhancements
 document.addEventListener('DOMContentLoaded', () => {
-    // Add smooth scrolling behavior
+    // Add smooth scrolling
     document.documentElement.style.scrollBehavior = 'smooth';
-    
-    // Add focus management
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Tab') {
-            document.body.classList.add('using-keyboard');
-        }
-    });
-    
-    document.addEventListener('mousedown', () => {
-        document.body.classList.remove('using-keyboard');
-    });
-    
-    // Add additional CSS animations
-    const style = document.createElement('style');
-    style.textContent = `
-        @keyframes rippleExpand {
-            0% {
-                transform: scale(0);
-                opacity: 1;
-            }
-            100% {
-                transform: scale(2);
-                opacity: 0;
-            }
-        }
-        
-        @keyframes starTwinkle {
-            0%, 100% {
-                opacity: 0.3;
-                transform: scale(1);
-            }
-            50% {
-                opacity: 1;
-                transform: scale(1.2);
-            }
-        }
-        
-        @keyframes particleFloat {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100vh) rotate(360deg);
-                opacity: 0;
-            }
-        }
-    `;
-    document.head.appendChild(style);
     
     // Add keyboard shortcuts
     document.addEventListener('keydown', (e) => {
@@ -808,5 +637,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') {
             document.getElementById('username').blur();
         }
+    });
+    
+    // Add focus management
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Tab') {
+            document.body.classList.add('using-keyboard');
+        }
+    });
+    
+    document.addEventListener('mousedown', () => {
+        document.body.classList.remove('using-keyboard');
     });
 });
