@@ -15,6 +15,10 @@ app.add_middleware(
 )
 GITHUB_API = "https://api.github.com"
 
+@app.get("/")
+async def root():
+    return {"message": "GitHub Profile Finder API is live 🚀"}
+
 @app.get("/search/{username}")
 async def search_user(username: str):
     async with httpx.AsyncClient() as client:
