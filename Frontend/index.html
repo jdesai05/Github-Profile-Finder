@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Galactic GitHub Profile Finder - Navigate the Code Universe</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Custom Space Cursor -->
+    <div class="cursor" id="cursor"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles-container" id="particlesContainer"></div>
+    
+    <div class="container">
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-rocket"></i> Galactic GitHub Explorer</h1>
+                <p>Navigate the infinite universe of code repositories and discover developer galaxies</p>
+                <div class="tech-stack">
+                    <span class="tech-badge">🚀 FastAPI</span>
+                    <span class="tech-badge">🐍 Python</span>
+                    <span class="tech-badge">⚡ JavaScript</span>
+                    <span class="tech-badge">🌌 Space UI</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="search-section glow-effect">
+            <div class="search-container">
+                <div class="search-box">
+                    <input type="text" id="username" placeholder="Enter GitHub username to explore their galaxy..." />
+                    <button id="searchBtn">
+                        <i class="fas fa-search"></i>
+                        <span>HYPERJUMP</span>
+                    </button>
+                </div>
+                <div class="search-options">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="includeRepos" checked>
+                        <span class="checkmark"></span>
+                        <span class="checkbox-text">Include repository planets</span>
+                    </label>
+                    <div class="search-tips">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Try navigating to: torvalds, gaearon, sindresorhus, or octocat</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Scanning the galaxy...</p>
+        </div>
+
+        <div class="error-message" id="errorMessage">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText"></span>
+        </div>
+
+        <div class="profile-container" id="profileContainer">
+            <div class="profile-card glow-effect">
+                <div class="profile-header">
+                    <div class="avatar-section">
+                        <img id="avatar" src="" alt="Developer Avatar" class="avatar">
+                        <div class="avatar-overlay">
+                            <i class="fab fa-github"></i>
+                        </div>
+                    </div>
+                    <div class="profile-info">
+                        <div class="profile-title">
+                            <h2 id="name"></h2>
+                            <p id="username-display" class="username"></p>
+                        </div>
+                        <p id="bio" class="bio"></p>
+                        <div class="profile-stats">
+                            <div class="stat glow-effect" id="followerseStat">
+                                <div class="stat-icon">
+                                    <i class="fas fa-users"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span id="followers" class="stat-number">0</span>
+                                    <small>Followers</small>
+                                </div>
+                            </div>
+                            <div class="stat glow-effect" id="followingStat">
+                                <div class="stat-icon">
+                                    <i class="fas fa-user-friends"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span id="following" class="stat-number">0</span>
+                                    <small>Following</small>
+                                </div>
+                            </div>
+                            <div class="stat glow-effect" id="reposStat">
+                                <div class="stat-icon">
+                                    <i class="fas fa-globe"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span id="publicRepos" class="stat-number">0</span>
+                                    <small>Planets</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="profile-details">
+                            <div class="detail" id="locationDetail">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="location"></span>
+                            </div>
+                            <div class="detail" id="joinedDetail">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span id="joinedDate"></span>
+                            </div>
+                            <div class="detail" id="websiteDetail">
+                                <i class="fas fa-globe"></i>
+                                <span id="website"></span>
+                            </div>
+                            <div class="detail" id="twitterDetail">
+                                <i class="fab fa-twitter"></i>
+                                <span id="twitter"></span>
+                            </div>
+                        </div>
+                        <div class="profile-actions">
+                            <a id="githubLink" href="" target="_blank" class="btn btn-primary glow-effect">
+                                <i class="fab fa-github"></i>
+                                <span>Visit Home Planet</span>
+                            </a>
+                            <button id="shareBtn" class="btn btn-secondary glow-effect">
+                                <i class="fas fa-share-alt"></i>
+                                <span>Share Coordinates</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="repos-section glow-effect" id="reposSection">
+                <div class="repos-header">
+                    <div class="repos-title">
+                        <h3><i class="fas fa-globe"></i> Repository Planets</h3>
+                        <span id="reposCount" class="repos-count"></span>
+                    </div>
+                    <div class="repos-controls">
+                        <div class="search-repos">
+                            <input type="text" id="repoSearch" placeholder="Search planets...">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <select id="sortRepos">
+                            <option value="updated">Recently Updated</option>
+                            <option value="stars">Most Stars</option>
+                            <option value="forks">Most Forks</option>
+                            <option value="name">Name A-Z</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="repos-grid" id="reposGrid"></div>
+                <div class="no-repos" id="noRepos" style="display: none;">
+                    <i class="fas fa-globe"></i>
+                    <h3>No planets discovered</h3>
+                    <p>This developer hasn't charted any public repositories in their galaxy.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Messages -->
+        <div class="status-message" id="statusMessage"></div>
+        
+        <!-- Connection Status -->
+        <div class="connection-status" id="connectionStatus">
+            <i class="fas fa-circle"></i>
+            <span>Establishing hyperspace connection...</span>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
